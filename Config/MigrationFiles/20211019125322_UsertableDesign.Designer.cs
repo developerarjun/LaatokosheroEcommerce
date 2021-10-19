@@ -3,14 +3,16 @@ using System;
 using LaatokosheroBackEnd.src.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace LaatokosheroBackEnd.Config.MigrationFiles
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20211019125322_UsertableDesign")]
+    partial class UsertableDesign
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -100,9 +102,12 @@ namespace LaatokosheroBackEnd.Config.MigrationFiles
                     b.Property<int>("RoleId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("StandardRefId")
+                        .HasColumnType("int");
+
                     b.HasKey("UserId", "RoleId");
 
-                    b.HasIndex("RoleId");
+                    b.HasIndex("StandardRefId");
 
                     b.ToTable("UserRoles");
                 });
@@ -127,17 +132,13 @@ namespace LaatokosheroBackEnd.Config.MigrationFiles
 
             modelBuilder.Entity("LaatokosheroBackEnd.src.Model.Profile.UserRole", b =>
                 {
-                    b.HasOne("LaatokosheroBackEnd.src.Model.RolePermission.Role", "Roles")
-                        .WithMany()
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("LaatokosheroBackEnd.src.Model.Profile.AdminUser", "AdminUsers")
                         .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("StandardRefId");
+
+                    b.HasOne("LaatokosheroBackEnd.src.Model.RolePermission.Role", "Roles")
+                        .WithMany()
+                        .HasForeignKey("StandardRefId");
 
                     b.Navigation("AdminUsers");
 
